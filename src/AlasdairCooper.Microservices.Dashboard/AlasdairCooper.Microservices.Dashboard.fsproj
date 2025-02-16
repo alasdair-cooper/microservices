@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Extensions.fs" />
+        <Compile Include="AppServices.fs" />
+        <Compile Include="Counter.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
+      <PackageReference Include="Avalonia.FuncUI.Elmish" Version="1.5.1" />
+      <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.6" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AlasdairCooper.Microservices.Shared\AlasdairCooper.Microservices.Shared.fsproj" />
+    </ItemGroup>
+
+</Project>
