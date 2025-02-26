@@ -1,7 +1,7 @@
 ﻿<Solution>
   <Folder Name="/src/">
     <Project Path="src\AlasdairCooper.Microservices.Dashboard\AlasdairCooper.Microservices.Dashboard.fsproj" Type="Classic F#" />
+    <Project Path="src\AlasdairCooper.Microservices.NetTracker\AlasdairCooper.Microservices.NetTracker.csproj" Type="Classic C#" />
     <Project Path="src\AlasdairCooper.Microservices.Shared\AlasdairCooper.Microservices.Shared.fsproj" Type="Classic F#" />
-    <Project Path="src\AlasdairCooper.Microservices.TestPublisher\AlasdairCooper.Microservices.TestPublisher.csproj" Type="Classic C#" />
   </Folder>
 </Solution>

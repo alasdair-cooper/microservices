@@ -1,55 +1,40 @@
 ﻿namespace AlasdairCooper.Microservices.Dashboard
 
-open System
-open System.Threading
-open AlasdairCooper.Microservices.Dashboard.Counter
+open AlasdairCooper.Microservices.Dashboard.Dashboard
 open Avalonia
 open Avalonia.Controls.ApplicationLifetimes
 open Avalonia.FuncUI.Elmish
 open Avalonia.Themes.Fluent
 open Avalonia.FuncUI.Hosts
-open Avalonia.Threading
 open Elmish
-open MassTransit
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 
 type MainWindow() as this =
     inherit HostWindow()
-    
-    let runner (services: IServiceCollection) =
-        let start dispatch =
-            services.AddDispatchProvider(dispatch) |> ignore
-            
-            let serviceProvider = services.BuildServiceProvider()
-            
-            let depot = serviceProvider.GetRequiredService<IBusDepot>()
-            let cts = new CancellationTokenSource()
-    
-            Dispatcher.UIThread.InvokeAsync(fun _ -> depot.Start(cts.Token) |> Async.AwaitTask)
-            |> ignore
-    
-            { new IDisposable with
-                member _.Dispose() =
-                    Dispatcher.UIThread.InvokeAsync(fun _ -> depot.Stop(cts.Token) |> Async.AwaitTask)
-                    |> ignore }
-    
-        start 
+
+    let initServiceCollection =
+        let config = ConfigurationBuilder().AddJsonFile("appsettings.json").Build()
+        ServiceCollection().AddSingleton(config :> IConfiguration)
 
     do
-        let services = ServiceCollection()
-        
-        services.AddMessageConsumer(Msg.Tick) |> ignore
-        
-        base.Title <- "Counter Example"
-        
-        let subscribe services _ =  [ [ "runner" ], runner services ]
+        let subscribe =
+            initServiceCollection
+                .AddMassTransit()
+                .AddMessageConsumer(Msg.DateTime)
+                .AddMessageConsumer(Msg.Log)
+                .AddMessageConsumer(Msg.SystemInfo)
+                .AddMessageConsumer(Msg.Ping)
+            |> Runner.subscribe
+
+        base.Title <- "Dashboard"
 
         Program.mkSimple init update view
         |> Program.withHost this
         |> Program.withConsoleTrace
-        |> Program.withSubscription (services |> subscribe)
+        |> Program.withSubscription subscribe
         |> Program.run
-        
+
 type App() =
     inherit Application()
 
